@@ -1,5 +1,5 @@
 {
-    "name": "hydra/validation",
+    "name": "hydrakit/validation",
     "description": "Validation library for Hydra PHP framework",
     "type": "library",
     "license": "MIT",
