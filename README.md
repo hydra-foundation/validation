@@ -12,7 +12,7 @@ UI (an htmx form) will never show.
 
 ```php
 $result = $validator->validate($data, [
-    'email' => [new Required, new Pattern('/^.+@.+$/')],
+    'email' => [new Required, new Pattern('/\A.+@.+\z/')],
     'name'  => [new Required, new MaxLength(120)],
 ]);
 
@@ -24,6 +24,10 @@ if ($result->fails()) {
 
 `Result` carries at most one message per field (the first rule that failed),
 which is the shape view models consume.
+
+Note the `\A`/`\z` anchors in the pattern: with `^`/`$`, PCRE's `$` tolerates a
+trailing newline (so `"a@b\n"` would pass), whereas `\z` anchors at the true
+end of the string.
 
 ## Custom rules
 

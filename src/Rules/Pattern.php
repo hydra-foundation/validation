@@ -6,6 +6,7 @@ namespace Hydra\Validation\Rules;
 
 use Hydra\Validation\Contracts\RuleInterface;
 use InvalidArgumentException;
+use Stringable;
 
 /**
  * The value, as a string, must match a PCRE pattern.
@@ -20,6 +21,11 @@ use InvalidArgumentException;
  * value as invalid at match time — `preg_match` returns false, not 0, on a bad
  * pattern, and that false would otherwise be flattened into a misleading
  * "invalid value" plus a runtime warning.
+ *
+ * A value that is not text-shaped (array, bool, non-Stringable object) is
+ * client input in the wrong shape — e.g. `field[]=x` arrives as an array — so
+ * it fails validation with the rule's normal message rather than being cast
+ * (which warns on arrays and fatals on objects) or throwing.
  */
 final class Pattern implements RuleInterface
 {
@@ -34,6 +40,24 @@ final class Pattern implements RuleInterface
 
     public function validate(mixed $value): ?string
     {
+        if (!$this->isTextual($value)) {
+            return $this->message;
+        }
+
         return preg_match($this->pattern, (string) $value) === 1 ? null : $this->message;
+    }
+
+    /**
+     * Whether the value can be safely treated as text. Booleans are excluded
+     * deliberately: real text input never arrives as a bool, and matching a
+     * pattern against "1"/"" would test a cast artifact, not client input.
+     */
+    private function isTextual(mixed $value): bool
+    {
+        return $value === null
+            || is_string($value)
+            || is_int($value)
+            || is_float($value)
+            || $value instanceof Stringable;
     }
 }
