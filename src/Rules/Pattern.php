@@ -9,23 +9,9 @@ use InvalidArgumentException;
 use Stringable;
 
 /**
+ * Pattern
+ *
  * The value, as a string, must match a PCRE pattern.
- *
- * The general-purpose escape hatch: anything the shipped rules don't cover
- * (email, slug, postal code) is a regex away, without this package growing a
- * rule for every format. The pattern is passed verbatim to preg_match,
- * delimiters and all.
- *
- * A malformed pattern is a developer error, not a validation failure, so it is
- * rejected at construction (fail-fast) rather than silently reporting every
- * value as invalid at match time — `preg_match` returns false, not 0, on a bad
- * pattern, and that false would otherwise be flattened into a misleading
- * "invalid value" plus a runtime warning.
- *
- * A value that is not text-shaped (array, bool, non-Stringable object) is
- * client input in the wrong shape — e.g. `field[]=x` arrives as an array — so
- * it fails validation with the rule's normal message rather than being cast
- * (which warns on arrays and fatals on objects) or throwing.
  */
 final class Pattern implements RuleInterface
 {

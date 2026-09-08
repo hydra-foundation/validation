@@ -7,11 +7,9 @@ namespace Hydra\Validation\Rules;
 use Hydra\Validation\Contracts\RuleInterface;
 
 /**
- * The value must be present: not null, not an empty string, not an empty array.
+ * Required
  *
- * Deliberately strict about what counts as "empty" so that legitimately falsy
- * values survive: `"0"`, `0`, and `false` are all present and pass. (Using
- * `empty()` here would be the classic falsy bug this framework avoids.)
+ * The value must be present: not null, not an empty string, not an empty array.
  */
 final class Required implements RuleInterface
 {
